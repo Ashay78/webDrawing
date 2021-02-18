@@ -1,0 +1,81 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font: 15px Helvetica, Arial;
+}
+form {
+  background: #2e2e2e;
+  color: #d4d4d4;
+  position: fixed;
+  padding: 10px 20px;
+  font-size: larger;
+  bottom: 0;
+  width: 100%;
+}
+form input {
+  border: 0;
+  background: transparent;
+  color: #d4d4d4;
+  outline-width: 0;
+  padding: 10px 20px;
+  font-size: larger;
+  width: 90%;
+}
+header p {
+  text-align: center;
+  font-size: larger;
+  font-weight: bold;
+  font-style: italic;
+  margin: 1em;
+  color: #7a7a7a;
+}
+#messages {
+  color: #2e2e2e;
+  list-style-type: none;
+  margin: 0 0 3em;
+  padding: 0;
+  height: calc(100% - 66px);
+  border-left: 1px solid black;
+}
+#messages li {
+  padding: 5px 20px;
+}
+#messages li:nth-child(odd) {
+  background: #d4d4d4;
+}
+
+#messageDiv {
+  min-width: 200px;
+  width: 30vw;
+}
+
+canvas {
+  height: 100%;
+  width: 70vw;
+  max-width: calc(100vw - 200px);
+}
+
+#flexContainer {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 63px);
+}
+
+#lobbyList {
+  border-bottom: 1px solid black;
+}
+
+#lobbyList > span {
+  border: 1px solid black;
+  border-top-left-radius: 100%;
+  border-top-right-radius: 100%;
+  padding: 5px;
+
+}
+
+#lobbyList > span.selected {
+  background: aqua;
+}
