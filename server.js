@@ -1,6 +1,6 @@
 var http = require('http'),
     WebSocketServer = require('ws').Server,
-    port = 1234,
+    port = 3000,
     host = 'localhost';
 
 class Room {
@@ -29,14 +29,6 @@ wss.broadcast = function broadcast(message) {
 
 // Register a listener for new connections on the WebSocket.
 wss.on('connection', function (client, request) {
-
-    // retrieve the name in the cookies
-    var cookies = request.headers.cookie.split(';');
-    var wsname = cookies.find((c) => {
-        return c.match(/^\s*wsname/) !== null;
-    });
-    wsname = wsname.split('=')[1];
-
     for (let room of rooms) {
         let message = {
             type: 'newRoom',
@@ -50,10 +42,9 @@ wss.on('connection', function (client, request) {
         let msg = JSON.parse(message);
         switch (msg.type) {
             case 'message':
-                var cli = '[' + decodeURIComponent(wsname) + '] ';
                 message = {
                     type: 'message',
-                    data: cli + msg.data
+                    data: msg.data
                 };
                 wss.broadcast(JSON.stringify(message));
                 break;

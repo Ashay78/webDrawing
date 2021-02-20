@@ -27,7 +27,7 @@ if (isDef(wsname)) {
 document.querySelector('header>p').textContent = decodeURIComponent(wsname);
 
 // Create a WebSocket connection to the server
-const ws = new WebSocket("ws://localhost:1234/socket");
+const ws = new WebSocket("wss://dessin.gcousin.site/socket");
 
 // We get notified once connected to the server
 ws.onopen = (event) => {
