@@ -114,6 +114,14 @@ function sendDrawing(event) {
             color: color
         }
     };
+    ctx.lineCap = "round";
+    const {x, moveX, y, moveY, color} = data.content;
+    ctx.strokeStyle = decodeURIComponent(color);
+    ctx.beginPath();
+    ctx.moveTo(x - moveX, y - moveY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    ctx.closePath();
     ws.send(JSON.stringify({
         type: 'drawing',
         data: data,

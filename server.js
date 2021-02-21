@@ -27,6 +27,14 @@ wss.broadcast = function broadcast(message) {
     });
 };
 
+wss.broadcast = function(data, sender) {
+    wss.clients.forEach(function(client) {
+        if (client !== sender) {
+            client.send(data)
+        }
+    })
+}
+
 // Register a listener for new connections on the WebSocket.
 wss.on('connection', function (client, request) {
     for (let room of rooms) {
@@ -66,7 +74,7 @@ wss.on('connection', function (client, request) {
                 rooms[msg.roomId-1].draw.push(
                     msg
                 );
-                wss.broadcast(JSON.stringify(msg));
+                wss.broadcast(JSON.stringify(msg), wss);
                 break;
             case 'getDrawing':
                 rooms.forEach(room => {
