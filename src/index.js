@@ -32,14 +32,14 @@ if (isDef(wsname)) {
 document.querySelector('header>p').textContent = decodeURIComponent(wsname);
 
 // Create a WebSocket connection to the server
-const ws = new WebSocket("ws://dessin.gcousin.site/socket");
+const wss = new WebSocket("wss://dessin.gcousin.site/socket");
 
 // We get notified once connected to the server
-ws.onopen = (event) => {
+wss.onopen = (event) => {
     console.log("We are connected.");
 };
 
-ws.onmessage = (event) => {
+wss.onmessage = (event) => {
     let message = JSON.parse(event.data);
     switch (message.type) {
         case 'message':
@@ -89,17 +89,17 @@ function sendMessage(event) {
     event.stopPropagation();
     if (sendInput.value !== '') {
         // Send data through the WebSocket
-        ws.send(JSON.stringify({type: 'message', data: sendInput.value}));
+        wss.send(JSON.stringify({type: 'message', data: sendInput.value}));
         sendInput.value = '';
     }
 }
 
 function createRoom() {
-    ws.send(JSON.stringify({type: 'createRoom'}));
+    wss.send(JSON.stringify({type: 'createRoom'}));
 }
 
 function clearRoom() {
-    ws.send(JSON.stringify({
+    wss.send(JSON.stringify({
         type: 'clearRoom',
         roomId: room
     }));
@@ -132,7 +132,7 @@ function sendDrawing(event) {
     ctx.stroke();
     ctx.closePath();
     console.log("dessin en local");
-    ws.send(JSON.stringify({
+    wss.send(JSON.stringify({
         type: 'drawing',
         data: data,
         roomId: room
@@ -146,7 +146,7 @@ function getRandomColor() {
 function changeRoom() {
     room = roomList.value;
     resetCanvas();
-    ws.send(JSON.stringify({
+    wss.send(JSON.stringify({
         type: 'getDrawing',
         roomId: room
     }));
