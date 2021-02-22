@@ -1,6 +1,6 @@
 var http = require('http'),
     WebSocketServer = require('ws').Server,
-    port = 3000,
+    port = 1234,
     host = 'localhost';
 
 class Room {
@@ -27,16 +27,16 @@ wss.broadcast = function broadcast(message) {
     });
 };
 
-wss.broadcast = function(data, sender) {
+wss.broadcastToOther = function(data, sender) {
     wss.clients.forEach(function(client) {
         if (client !== sender) {
             client.send(data)
         }
     })
-}
+};
 
 // Register a listener for new connections on the WebSocket.
-wss.on('connection', function (client, request) {
+wss.on('connection', function (client) {
     for (let room of rooms) {
         let message = {
             type: 'newRoom',
@@ -74,7 +74,7 @@ wss.on('connection', function (client, request) {
                 rooms[msg.roomId-1].draw.push(
                     msg
                 );
-                wss.broadcast(JSON.stringify(msg), wss);
+                wss.broadcastToOther(JSON.stringify(msg), client);
                 break;
             case 'getDrawing':
                 rooms.forEach(room => {

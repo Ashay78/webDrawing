@@ -1,6 +1,7 @@
 import './index.css';
 import nameGenerator from './name-generator';
 import isDef from './is-def';
+import {findRenderedComponentWithType} from "react-dom/test-utils";
 
 
 // Store/retrieve the name in/from a cookie.
@@ -11,6 +12,10 @@ const messages = document.querySelector('#messages');
 let line;
 let room = roomList.value;
 let color = getRandomColor();
+
+function getColor() {
+    return color;
+}
 
 
 let wsname = cookies.find(function (c) {
@@ -27,7 +32,7 @@ if (isDef(wsname)) {
 document.querySelector('header>p').textContent = decodeURIComponent(wsname);
 
 // Create a WebSocket connection to the server
-const ws = new WebSocket("wss://dessin.gcousin.site/socket");
+const ws = new WebSocket("ws://" + window.location.host + "/socket");
 
 // We get notified once connected to the server
 ws.onopen = (event) => {
@@ -38,11 +43,13 @@ ws.onmessage = (event) => {
     let message = JSON.parse(event.data);
     switch (message.type) {
         case 'message':
+            console.log("message");
             line = document.createElement('li');
             line.textContent = message.data;
             messages.appendChild(line);
             break;
         case 'newRoom':
+            console.log("create room");
             let newOption = document.createElement('option');
             newOption.appendChild(document.createTextNode('Room ' + message.roomId));
             newOption.value = message.roomId;
@@ -50,6 +57,7 @@ ws.onmessage = (event) => {
             break;
         case 'drawing':
             if (message.roomId === room) {
+                console.log("dessin du server");
                 ctx.lineCap = "round";
                 const {x, moveX, y, moveY, color} = message.data.content;
                 ctx.strokeStyle = decodeURIComponent(color);
@@ -61,11 +69,13 @@ ws.onmessage = (event) => {
             }
             break;
         case 'clearRoom':
+            console.log("clear room");
             if (message.roomId === room) {
                 resetCanvas();
             }
             break;
         case 'changeRoom':
+            console.log("change room");
             roomList.value = message.roomId;
             changeRoom();
             break;
@@ -89,7 +99,6 @@ function createRoom() {
 }
 
 function clearRoom() {
-    console.log(room);
     ws.send(JSON.stringify({
         type: 'clearRoom',
         roomId: room
@@ -111,7 +120,7 @@ function sendDrawing(event) {
             y: event.offsetY * yScale,
             moveX: event.movementX * xScale,
             moveY: event.movementY * yScale,
-            color: color
+            color: getColor()
         }
     };
     ctx.lineCap = "round";
@@ -122,6 +131,7 @@ function sendDrawing(event) {
     ctx.lineTo(x, y);
     ctx.stroke();
     ctx.closePath();
+    console.log("dessin en local");
     ws.send(JSON.stringify({
         type: 'drawing',
         data: data,
